@@ -6,21 +6,35 @@
     <title>Ethio International School Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* HIGH-PERFORMANCE MOTION BACKGROUND */
         #bg-image {
-            transition: transform 0.3s cubic-bezier(0.1, 0.4, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.05, 0.7, 0.1, 1);
             will-change: transform;
             background-image: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2070');
             background-size: cover;
             background-position: center;
         }
+        
+        /* VIBRANT COLORFUL OVERLAY */
         .vibrant-overlay {
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 58, 138, 0.3) 50%, rgba(192, 38, 211, 0.2) 100%);
+            background: linear-gradient(135deg, 
+                rgba(15, 23, 42, 0.9) 0%, 
+                rgba(30, 58, 138, 0.4) 50%, 
+                rgba(192, 38, 211, 0.25) 100%);
         }
+
         .glass-card {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(251, 191, 36, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+        }
+        
+        .school-title {
+            background: linear-gradient(to bottom right, #fff, #fbbf24);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
@@ -32,16 +46,22 @@
     </div>
 
     <div class="relative z-10 w-full max-w-[420px] px-6">
-        <div class="glass-card rounded-[2.5rem] p-10 shadow-2xl border-t-2 border-t-amber-500/50">
+        <div class="glass-card rounded-[3rem] p-10 md:p-12 border-t border-white/10">
             
-            <div class="text-center mb-10">
-                <h1 class="text-3xl font-black tracking-tight text-white uppercase">Ethio International</h1>
-                <p class="text-amber-500 text-[10px] font-bold uppercase tracking-[0.4em] mt-1">Unified School Portal</p>
+            <div class="text-center mb-12">
+                <div class="inline-flex p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 mb-4">
+                    <svg class="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                        <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                    </svg>
+                </div>
+                <h1 class="text-3xl font-black tracking-tight uppercase school-title">Ethio International</h1>
+                <p class="text-amber-500/70 text-[10px] font-bold uppercase tracking-[0.4em] mt-2">Authorized Access Portal</p>
             </div>
 
             <div class="space-y-4">
                 <button id="loginBtn" class="w-full flex items-center justify-center gap-4 bg-white text-slate-900 py-4 rounded-2xl font-bold hover:bg-amber-50 transition-all active:scale-95 shadow-xl">
-                    <img src="https://www.svgrepo.com/show/355037/google.svg" class="w-6 h-6">
+                    <img src="https://www.svgrepo.com/show/355037/google.svg" class="w-5 h-5">
                     Continue with Google
                 </button>
 
@@ -51,55 +71,61 @@
                 </button>
             </div>
 
-            <div class="mt-8 text-center opacity-40">
-                <p class="text-[9px] uppercase tracking-widest">© 2026 Ethio International School</p>
+            <div class="mt-10 pt-6 border-t border-white/5 text-center">
+                <p class="text-[9px] text-slate-500 uppercase tracking-widest font-medium">Secure School System v2.0</p>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, OAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        // REPLACE WITH YOUR FIREBASE KEYS
+        // Integrated Your Specific Firebase Config
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT.appspot.com",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyDV6d0Ge02rzWCqBPEmAUSXuxPLU_QJSDk",
+            authDomain: "ethio-international-school.firebaseapp.com",
+            projectId: "ethio-international-school",
+            storageBucket: "ethio-international-school.firebasestorage.app",
+            messagingSenderId: "956874907448",
+            appId: "1:956874907448:web:e24c3153f48e31fefaebcd"
         };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+        const googleProvider = new GoogleAuthProvider();
+        const appleProvider = new OAuthProvider('apple.com');
 
         const ADMIN_EMAIL = "fikredbelay2002@gmail.com";
 
-        document.getElementById('loginBtn').onclick = async () => {
+        // Unified Login Handler
+        async function startLogin(provider) {
             try {
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
 
-                // SILENT DETECTION LOGIC
+                // Silent Detection & Routing
                 if (user.email === ADMIN_EMAIL) {
-                    console.log("Admin detected.");
+                    console.log("Admin Access Detected.");
                     window.location.href = "admin.html";
                 } else {
-                    console.log("Teacher/Parent/Student detected.");
+                    console.log("General User Access Detected.");
                     window.location.href = "portal.html";
                 }
             } catch (error) {
-                alert("Login failed. Check your connection.");
+                console.error(error);
+                alert("Login encountered an issue. Please try again.");
             }
-        };
+        }
 
-        // MOTION EFFECT
+        document.getElementById('loginBtn').onclick = () => startLogin(googleProvider);
+        document.getElementById('appleBtn').onclick = () => startLogin(appleProvider);
+
+        // Parallax Motion Sensitivity
         const bg = document.getElementById('bg-image');
         window.addEventListener('mousemove', (e) => {
-            const x = (window.innerWidth / 2 - e.pageX) / 30;
-            const y = (window.innerHeight / 2 - e.pageY) / 30;
+            const x = (window.innerWidth / 2 - e.pageX) / 35;
+            const y = (window.innerHeight / 2 - e.pageY) / 35;
             bg.style.transform = `translate(${x}px, ${y}px) scale(1.1)`;
         });
     </script>
