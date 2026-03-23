@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EIS | Admin Command Center</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #020617; color: white; font-family: sans-serif; }
+        .glass-nav { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(251, 191, 36, 0.2); }
+        .stat-card { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); transition: 0.3s; }
+        .stat-card:hover { border-color: #f59e0b; background: rgba(245, 158, 11, 0.05); }
+    </style>
+</head>
+<body>
+
+    <nav class="glass-nav sticky top-0 z-50 px-8 py-4 flex justify-between items-center">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center font-bold text-black">E</div>
+            <h1 class="text-xl font-bold tracking-tight">Admin Console</h1>
+        </div>
+        <button onclick="logout()" class="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-red-500 transition-colors">Sign Out</button>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-8">
+        <header class="mb-12">
+            <h2 class="text-4xl font-black mb-2">Welcome Back, Fikremarkos</h2>
+            <p class="text-slate-400">Managing Ethio International School Systems</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="stat-card p-6 rounded-3xl">
+                <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-2">Total Students</p>
+                <h3 class="text-3xl font-bold">1,240</h3>
+            </div>
+            <div class="stat-card p-6 rounded-3xl border-l-4 border-l-amber-500">
+                <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-2">Active Sessions</p>
+                <h3 class="text-3xl font-bold">42</h3>
+            </div>
+            <div class="stat-card p-6 rounded-3xl">
+                <p class="text-slate-500 text-xs font-bold uppercase tracking-widest mb-2">System Status</p>
+                <h3 class="text-3xl font-bold text-emerald-400">Online</h3>
+            </div>
+        </div>
+
+        <section class="stat-card rounded-[2rem] overflow-hidden">
+            <div class="p-6 border-b border-white/5 flex justify-between items-center">
+                <h4 class="font-bold">Recent Activity Log</h4>
+                <span class="text-[10px] bg-amber-500/10 text-amber-500 px-3 py-1 rounded-full font-bold uppercase">Live Updates</span>
+            </div>
+            <table class="w-full text-left">
+                <thead class="bg-white/5 text-slate-400 text-xs uppercase font-bold tracking-widest">
+                    <tr>
+                        <th class="p-4">User Email</th>
+                        <th class="p-4">Role</th>
+                        <th class="p-4">Time</th>
+                        <th class="p-4">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="text-sm">
+                    <tr class="border-b border-white/5 hover:bg-white/5 transition-colors">
+                        <td class="p-4">fikredbelay2002@gmail.com</td>
+                        <td class="p-4 font-mono text-red-400">ADMIN</td>
+                        <td class="p-4 text-slate-400">Just now</td>
+                        <td class="p-4"><span class="w-2 h-2 rounded-full bg-emerald-500 inline-block mr-2"></span>Active</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDV6d0Ge02rzWCqBPEmAUSXuxPLU_QJSDk",
+            authDomain: "ethio-international-school.firebaseapp.com",
+            projectId: "ethio-international-school",
+            storageBucket: "ethio-international-school.firebasestorage.app",
+            messagingSenderId: "956874907448",
+            appId: "1:956874907448:web:e24c3153f48e31fefaebcd"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // SECURITY CHECK: If someone isn't you, kick them out
+        onAuthStateChanged(auth, (user) => {
+            if (!user || user.email !== "fikredbelay2002@gmail.com") {
+                window.location.href = "index.html";
+            }
+        });
+
+        window.logout = () => {
+            signOut(auth).then(() => { window.location.href = "index.html"; });
+        };
+    </script>
+</body>
+</html>
